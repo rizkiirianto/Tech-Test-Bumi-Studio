@@ -42,29 +42,32 @@ namespace TechTest.UI
             if (battleManager.state == BattleState.PlayerTurn || battleManager.state == BattleState.EnemyTurn)
             {
                 UpdateUnitUI();
-                energyText.text = $"Energy: {battleManager.currentEnergy} / {battleManager.maxEnergy}";
+                if (energyText != null) energyText.text = $"Energy: {battleManager.currentEnergy} / {battleManager.maxEnergy}";
             }
         }
 
         private void UpdateUnitUI()
         {
-            if (battleManager.playerUnit != null)
+            if (battleManager.playerUnit != null && battleManager.playerUnit.unitData != null)
             {
-                playerHPText.text = $"HP: {battleManager.playerUnit.currentHP} / {battleManager.playerUnit.unitData.maxHP}";
-                playerBlockText.text = $"Block: {battleManager.playerUnit.currentBlock}";
+                if (playerHPText != null) playerHPText.text = $"HP: {battleManager.playerUnit.currentHP} / {battleManager.playerUnit.unitData.maxHP}";
+                if (playerBlockText != null) playerBlockText.text = $"Block: {battleManager.playerUnit.currentBlock}";
             }
 
-            if (battleManager.enemyUnit != null)
+            if (battleManager.enemyUnit != null && battleManager.enemyUnit.unitData != null)
             {
-                enemyHPText.text = $"HP: {battleManager.enemyUnit.currentHP} / {battleManager.enemyUnit.unitData.maxHP}";
-                enemyBlockText.text = $"Block: {battleManager.enemyUnit.currentBlock}";
+                if (enemyHPText != null) enemyHPText.text = $"HP: {battleManager.enemyUnit.currentHP} / {battleManager.enemyUnit.unitData.maxHP}";
+                if (enemyBlockText != null) enemyBlockText.text = $"Block: {battleManager.enemyUnit.currentBlock}";
+                if (enemyIntentText != null) enemyIntentText.text = $"Intent: Attack {battleManager.upcomingEnemyDamage}";
             }
         }
 
         private void UpdateDeckUI()
         {
-            drawPileCountText.text = deckManager.drawPile.Count.ToString();
-            discardPileCountText.text = deckManager.discardPile.Count.ToString();
+            if (drawPileCountText != null) drawPileCountText.text = $"Draw : {deckManager.drawPile.Count}";
+            if (discardPileCountText != null) discardPileCountText.text = $"Discard : {deckManager.discardPile.Count}";
+
+            if (handContainer == null) return;
 
             // Clear current hand UI
             foreach (Transform child in handContainer)
@@ -72,8 +75,7 @@ namespace TechTest.UI
                 Destroy(child.gameObject);
             }
 
-            // Spawn new hand UI (placeholder logic)
-            // In Unity editor, you'll need to attach a script to the prefab to handle clicking
+            // Spawn new hand UI
             for (int i = 0; i < deckManager.hand.Count; i++)
             {
                 if (cardUIPrefab != null && handContainer != null)
@@ -81,8 +83,11 @@ namespace TechTest.UI
                     GameObject cardGo = Instantiate(cardUIPrefab, handContainer);
                     cardGo.name = "Card_" + deckManager.hand[i].cardName;
                     
-                    // You would usually get a CardUI script here and pass the CardData to it
-                    // e.g. cardGo.GetComponent<CardUI>().Setup(deckManager.hand[i]);
+                    CardUI cardUI = cardGo.GetComponent<CardUI>();
+                    if (cardUI != null)
+                    {
+                        cardUI.Setup(deckManager.hand[i]);
+                    }
                 }
             }
         }

@@ -24,8 +24,10 @@ namespace TechTest.Core
         [Header("System References")]
         public DeckManager deckManager;
         public BattleManager battleManager;
-        // In a real game, you'd have a list of possible Enemy UnitData
-        public UnitData standardEnemyData; 
+        
+        [Header("Enemy Encounters")]
+        public List<UnitData> normalEnemies; 
+        public UnitData bossEnemy;
 
         private void Awake()
         {
@@ -54,7 +56,7 @@ namespace TechTest.Core
             currentRoomIndex++;
             Debug.Log($"Entering Room {currentRoomIndex}");
             
-            // For prototype: Room 1, 2, 4 are Combat. Room 3 is Campfire.
+            // For prototype: Room 1, 2 are normal combat. Room 3 is Campfire. Room 4 is Boss.
             if (currentRoomIndex == 3)
             {
                 EnterCampfireNode();
@@ -72,10 +74,20 @@ namespace TechTest.Core
             // Add fatigue for traveling/fighting
             AddFatigue(20);
 
-            // Sync Persistent HP to the Hero's UnitData temporarily for the BattleManager to read
-            // (Alternatively, BattleManager directly reads from RunManager)
+            // Determine which enemy to fight
+            UnitData enemyToFight;
+            if (currentRoomIndex == maxRooms)
+            {
+                enemyToFight = bossEnemy;
+                Debug.Log("BOSS ENCOUNTER!");
+            }
+            else
+            {
+                int randomIndex = Random.Range(0, normalEnemies.Count);
+                enemyToFight = normalEnemies[randomIndex];
+            }
             
-            battleManager.StartBattle(heroData, standardEnemyData);
+            battleManager.StartBattle(heroData, enemyToFight);
             battleManager.playerUnit.SetHP(currentRunHP);
         }
 

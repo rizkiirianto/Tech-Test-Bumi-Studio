@@ -27,7 +27,7 @@ namespace TechTest.Combat
         public int maxEnergy;
 
         // Simple Enemy Intent (for prototype)
-        private int upcomingEnemyDamage = 5;
+        public int upcomingEnemyDamage = 5;
 
         public void StartBattle(UnitData pData, UnitData eData)
         {

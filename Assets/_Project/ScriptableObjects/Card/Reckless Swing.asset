@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Reckless Swing
   m_EditorClassIdentifier: 
   cardName: Reckless Swing
-  description: Deals 12 damage, but cost 15 fatigue
+  description: Deals 6 damage to all enemies, but cost 15 fatigue
   cardIcon: {fileID: 0}
   energyCost: 0
   cardType: 0
-  targetType: 0
+  targetType: 1
   effects:
   - effectType: 0
-    value: 12
+    value: 6
     secondaryValue: 0
   fatigueCost: 15

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e913bd5bc0857a34b8b3abe69552667f, type: 3}
   m_Name: Goblin King
   m_EditorClassIdentifier: 
-  unitName: Goblin
+  unitName: King Goblin
   unitSprite: {fileID: 0}
   isPlayer: 0
   maxHP: 40

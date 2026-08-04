@@ -39,7 +39,6 @@ namespace TechTest.UI
         {
             if (RunManager.Instance != null)
             {
-                globalHPText.text = $"HP: {RunManager.Instance.currentRunHP}";
                 globalFatigueText.text = $"Fatigue: {RunManager.Instance.currentFatigue}";
                 roomText.text = $"Room: {RunManager.Instance.currentRoomIndex}";
 

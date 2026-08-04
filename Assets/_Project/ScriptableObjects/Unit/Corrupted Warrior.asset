@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e913bd5bc0857a34b8b3abe69552667f, type: 3}
   m_Name: Corrupted Warrior
   m_EditorClassIdentifier: 
-  unitName: Corrupted Knight
+  unitName: Corrupted Warrior
   unitSprite: {fileID: 0}
   isPlayer: 0
   maxHP: 45

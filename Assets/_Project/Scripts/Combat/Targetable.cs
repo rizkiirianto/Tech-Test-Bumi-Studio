@@ -17,9 +17,9 @@ namespace TechTest.Combat
 
         private void OnMouseEnter()
         {
-            if (battleManager != null && battleManager.state == BattleState.ChoosingTarget)
+            if (battleManager != null)
             {
-                unit.Flash(true);
+                battleManager.HoverTarget(unit);
             }
         }
 
@@ -27,7 +27,7 @@ namespace TechTest.Combat
         {
             if (battleManager != null && unit != null)
             {
-                unit.Flash(false);
+                battleManager.ClearHover(unit);
             }
         }
 

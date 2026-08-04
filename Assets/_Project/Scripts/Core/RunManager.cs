@@ -50,6 +50,7 @@ namespace TechTest.Core
             if (currentRoomIndex >= maxRooms)
             {
                 Debug.Log("YOU WIN! You have completed the run.");
+                TechTest.UI.RunUIManager.Instance.ShowGameOver(true);
                 return;
             }
 
@@ -70,6 +71,7 @@ namespace TechTest.Core
         private void EnterCombatNode()
         {
             Debug.Log("Combat Node Started.");
+            TechTest.UI.RunUIManager.Instance.ShowBattle();
             
             // Add fatigue for traveling/fighting
             AddFatigue(20);
@@ -94,9 +96,7 @@ namespace TechTest.Core
         private void EnterCampfireNode()
         {
             Debug.Log("Campfire Node Started. Choose: Rest or Upgrade?");
-            // We can show a UI with 2 buttons here.
-            // For now, we'll simulate clicking Rest:
-            Rest();
+            TechTest.UI.RunUIManager.Instance.ShowCampfire();
         }
 
         public void Rest()
@@ -113,6 +113,16 @@ namespace TechTest.Core
             CompleteNode();
         }
 
+        public void Train()
+        {
+            Debug.Log("You trained at the campfire. You feel stronger, but tired.");
+            // Train increases max HP for this run, but doesn't heal or reset fatigue
+            currentRunHP += 10;
+            heroData.maxHP += 10; 
+            
+            CompleteNode();
+        }
+
         public void CompleteNode()
         {
             Debug.Log("Node Completed. Proceeding...");
@@ -124,11 +134,19 @@ namespace TechTest.Core
             if (won)
             {
                 currentRunHP = remainingHP;
-                CompleteNode();
+                if (currentRoomIndex < maxRooms)
+                {
+                    TechTest.UI.RunUIManager.Instance.ShowReward();
+                }
+                else
+                {
+                    TechTest.UI.RunUIManager.Instance.ShowGameOver(true);
+                }
             }
             else
             {
                 Debug.Log("GAME OVER! Your hero has fallen.");
+                TechTest.UI.RunUIManager.Instance.ShowGameOver(false);
             }
         }
 

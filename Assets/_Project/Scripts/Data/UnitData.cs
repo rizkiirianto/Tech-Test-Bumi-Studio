@@ -17,5 +17,9 @@ namespace TechTest.Data
         public int maxEnergy = 3;
         public int maxFatigue = 100;
         public int drawPerTurn = 5;
+
+        [Header("Visual Variation")]
+        public Color unitColor = Color.white;
+        public Vector3 unitScale = Vector3.one;
     }
 }

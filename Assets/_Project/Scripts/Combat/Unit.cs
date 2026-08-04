@@ -7,14 +7,57 @@ namespace TechTest.Combat
     {
         public UnitData unitData;
 
-        public int currentHP { get; private set; }
-        public int currentBlock { get; private set; }
+        public int currentHP;
+        public int currentBlock;
+        public bool isDead => currentHP <= 0;
+
+        [Header("Visual Components (Optional)")]
+        public SpriteRenderer spriteRenderer;
+        private Color originalColor;
+        private Coroutine flashCoroutine;
 
         public void Initialize(UnitData data)
         {
             unitData = data;
-            currentHP = data.maxHP;
+            // currentHP is set by RunManager if it's the player, or maxHP for enemies
+            if (!unitData.isPlayer)
+            {
+                currentHP = unitData.maxHP;
+            }
             currentBlock = 0;
+
+            if (spriteRenderer != null && unitData != null)
+            {
+                if (unitData.unitSprite != null) spriteRenderer.sprite = unitData.unitSprite;
+                spriteRenderer.color = unitData.unitColor;
+                transform.localScale = unitData.unitScale;
+                originalColor = unitData.unitColor;
+            }
+        }
+
+        public void Flash(bool isFlashing)
+        {
+            if (spriteRenderer == null) return;
+            
+            if (flashCoroutine != null) StopCoroutine(flashCoroutine);
+            
+            if (isFlashing)
+            {
+                flashCoroutine = StartCoroutine(FlashRoutine());
+            }
+            else
+            {
+                spriteRenderer.color = originalColor;
+            }
+        }
+
+        private System.Collections.IEnumerator FlashRoutine()
+        {
+            while (true)
+            {
+                spriteRenderer.color = Color.Lerp(originalColor, Color.yellow, Mathf.PingPong(Time.time * 5f, 1f));
+                yield return null;
+            }
         }
 
         public void SetHP(int hp)

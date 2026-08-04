@@ -12,7 +12,9 @@ namespace TechTest.Data
 
         [Header("Base Stats")]
         public int maxHP;
-        
+        public int minAttackDamage;
+        public int maxAttackDamage;
+
         [Header("Player Specific Stats")]
         public int maxEnergy = 3;
         public int maxFatigue = 100;
@@ -21,5 +23,8 @@ namespace TechTest.Data
         [Header("Visual Variation")]
         public Color unitColor = Color.white;
         public Vector3 unitScale = Vector3.one;
+
+        [Header("Passive Skills")]
+        public System.Collections.Generic.List<UnitPassive> passives;
     }
 }

@@ -16,8 +16,12 @@ MonoBehaviour:
   unitSprite: {fileID: 0}
   isPlayer: 0
   maxHP: 120
+  minAttackDamage: 5
+  maxAttackDamage: 15
   maxEnergy: 3
   maxFatigue: 100
   drawPerTurn: 5
   unitColor: {r: 1, g: 0, b: 0, a: 1}
   unitScale: {x: 1.5, y: 1.5, z: 1.5}
+  passives:
+  - {fileID: 11400000, guid: 6fd599d0ce650cf48a346b4ffeee3f4c, type: 2}

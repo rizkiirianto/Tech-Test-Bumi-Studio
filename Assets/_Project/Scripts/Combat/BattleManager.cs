@@ -148,7 +148,7 @@ namespace TechTest.Combat
             {
                 if (!enemy.isDead)
                 {
-                    enemy.nextTurnIntentDamage = Random.Range(4, 9);
+                    enemy.nextTurnIntentDamage = Random.Range(enemy.unitData.minAttackDamage, enemy.unitData.maxAttackDamage + 1);
                 }
             }
 
@@ -382,7 +382,23 @@ namespace TechTest.Combat
             }
 
             // 3. Apply Actual Logic
-            if (damage > 0) target.TakeDamage(damage);
+            if (damage > 0)
+            {
+                target.TakeDamage(damage);
+                
+                // --- PASSIVE SKILLS TRIGGER ---
+                // Memicu seluruh kemampuan pasif milik si penyerang
+                if (caster != null && caster.unitData != null && caster.unitData.passives != null)
+                {
+                    foreach (var passive in caster.unitData.passives)
+                    {
+                        if (passive != null)
+                        {
+                            passive.OnAttackLanded(caster, target, damage);
+                        }
+                    }
+                }
+            }
             if (block > 0) caster.AddBlock(block); // Block SELALU diberikan ke pelempar kartu (Pemain/Musuh itu sendiri)
             if (heal > 0) caster.Heal(heal); // Heal juga selalu masuk ke si pelempar kartu (Pemain)
 

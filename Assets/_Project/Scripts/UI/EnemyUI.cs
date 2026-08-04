@@ -21,8 +21,8 @@ namespace TechTest.UI
             {
                 if (hpText != null) hpText.text = $"{myUnit.unitData.unitName}: {myUnit.currentHP} / {myUnit.unitData.maxHP}";
                 if (blockText != null) blockText.text = $"Block: {myUnit.currentBlock}";
-                // Simplifikasi intent untuk prototype
-                if (intentText != null) intentText.text = $"Intent: Atk 5";
+                // Tampilkan intent damage yang sebenarnya
+                if (intentText != null) intentText.text = $"Intent: Atk {myUnit.nextTurnIntentDamage}";
             }
             else
             {

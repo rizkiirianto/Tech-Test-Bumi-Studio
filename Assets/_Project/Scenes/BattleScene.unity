@@ -1716,7 +1716,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentRoomIndex: 0
-  maxRooms: 4
+  maxRooms: 7
   currentRunHP: 0
   currentFatigue: 0
   heroData: {fileID: 11400000, guid: 9c3f51a6f0b983349bf3028aa80a29a8, type: 2}
@@ -4069,8 +4069,8 @@ MonoBehaviour:
     m_Bottom: 0
   m_ChildAlignment: 4
   m_Spacing: 100
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0

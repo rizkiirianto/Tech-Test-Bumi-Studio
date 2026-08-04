@@ -143,10 +143,13 @@ namespace TechTest.Combat
             playerUnit.ClearBlock();
             currentEnergy = maxEnergy;
 
-            // Determine Enemy Intents (Random for all)
+            // Determine Enemy Intents
             foreach (var enemy in activeEnemies)
             {
-                // Future expansion: randomize enemy intent per enemy
+                if (!enemy.isDead)
+                {
+                    enemy.nextTurnIntentDamage = Random.Range(4, 9);
+                }
             }
 
             deckManager.DrawCards(playerUnit.unitData.drawPerTurn);
@@ -181,12 +184,12 @@ namespace TechTest.Combat
 
                 enemy.ClearBlock();
 
-                // Lunge Animation for Enemy
-                int dmg = Random.Range(4, 9);
+                // Lunge Animation for Enemy using their stored intent
+                int dmg = enemy.nextTurnIntentDamage;
                 Debug.Log($"{enemy.unitData.unitName} attacks for {dmg} damage!");
 
                 bool actionFinished = false;
-                StartCoroutine(Routine_ExecuteAction(enemy, playerUnit, false, dmg, 0, () =>
+                StartCoroutine(Routine_ExecuteAction(enemy, playerUnit, 0, dmg, 0, () =>
                 {
                     actionFinished = true;
                 }));
@@ -288,20 +291,20 @@ namespace TechTest.Combat
             CardData cardToPlay = pendingCard;
             pendingCard = null;
 
-            bool isHeal = false;
             int totalDamage = 0;
             int totalBlock = 0;
+            int totalHeal = 0;
             int totalDraw = 0;
 
             foreach (var effect in cardToPlay.effects)
             {
                 if (effect.effectType == EffectType.Damage) totalDamage += effect.value;
                 if (effect.effectType == EffectType.Block) totalBlock += effect.value;
-                if (effect.effectType == EffectType.Heal) isHeal = true;
+                if (effect.effectType == EffectType.Heal) totalHeal += effect.value;
                 if (effect.effectType == EffectType.DrawCard) totalDraw += effect.value;
             }
 
-            StartCoroutine(Routine_ExecuteAction(playerUnit, target, isHeal, totalDamage, totalBlock, () => {
+            StartCoroutine(Routine_ExecuteAction(playerUnit, target, totalHeal, totalDamage, totalBlock, () => {
                 // Apply remaining card logic after lunge impact
                 if (cardToPlay.targetType == TargetType.AllEnemies && totalDamage > 0)
                 {
@@ -319,6 +322,12 @@ namespace TechTest.Combat
                 if (totalDraw > 0) deckManager.DrawCards(totalDraw);
                 deckManager.PlayCard(cardToPlay);
 
+                // Tambahkan Fatigue berdasarkan harga fatigueCost pada kartu (jika ada)
+                if (cardToPlay.fatigueCost > 0 && TechTest.Core.RunManager.Instance != null)
+                {
+                    TechTest.Core.RunManager.Instance.AddFatigue(cardToPlay.fatigueCost);
+                }
+
                 CheckWinCondition();
 
                 if (state != BattleState.Won)
@@ -334,7 +343,7 @@ namespace TechTest.Combat
             if (unit != null) unit.Flash(false);
         }
 
-        public IEnumerator Routine_ExecuteAction(Unit caster, Unit target, bool isHeal, int damage, int block, System.Action onComplete)
+        public IEnumerator Routine_ExecuteAction(Unit caster, Unit target, int heal, int damage, int block, System.Action onComplete)
         {
             if (caster == null || target == null)
             {
@@ -361,7 +370,7 @@ namespace TechTest.Combat
             // 2. Impact Effects
             if (sfxSource != null)
             {
-                if (isHeal || block > 0) sfxSource.PlayOneShot(sfxHeal);
+                if (heal > 0 || block > 0) sfxSource.PlayOneShot(sfxHeal);
                 else if (damage > 0) sfxSource.PlayOneShot(sfxHit);
             }
 
@@ -374,7 +383,8 @@ namespace TechTest.Combat
 
             // 3. Apply Actual Logic
             if (damage > 0) target.TakeDamage(damage);
-            if (block > 0) target.AddBlock(block); // Normally cast on self, but allowed here
+            if (block > 0) caster.AddBlock(block); // Block SELALU diberikan ke pelempar kartu (Pemain/Musuh itu sendiri)
+            if (heal > 0) caster.Heal(heal); // Heal juga selalu masuk ke si pelempar kartu (Pemain)
 
             yield return new WaitForSeconds(0.1f);
             if (target != caster && target != null) target.Flash(false);

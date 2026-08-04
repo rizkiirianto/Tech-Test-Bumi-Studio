@@ -9,6 +9,7 @@ namespace TechTest.Combat
 
         public int currentHP;
         public int currentBlock;
+        public int nextTurnIntentDamage; // Nilai serangan untuk turn ini
         public bool isDead => currentHP <= 0;
 
         [Header("Visual Components (Optional)")]
@@ -38,9 +39,9 @@ namespace TechTest.Combat
         public void Flash(bool isFlashing)
         {
             if (spriteRenderer == null) return;
-            
+
             if (flashCoroutine != null) StopCoroutine(flashCoroutine);
-            
+
             if (isFlashing)
             {
                 flashCoroutine = StartCoroutine(FlashRoutine());
@@ -98,6 +99,14 @@ namespace TechTest.Combat
         {
             currentBlock += amount;
             Debug.Log($"{unitData.unitName} gains {amount} block. Total Block: {currentBlock}");
+        }
+
+        public void Heal(int amount)
+        {
+            if (amount <= 0) return;
+            currentHP += amount;
+            if (currentHP > unitData.maxHP) currentHP = unitData.maxHP;
+            Debug.Log($"{unitData.unitName} heals for {amount}. HP: {currentHP}");
         }
 
         public void ClearBlock()

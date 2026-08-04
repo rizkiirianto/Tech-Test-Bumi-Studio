@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Shield Bash
   m_EditorClassIdentifier: 
   cardName: Shield Bash
-  description: Deals 5 damage, add 10 shield
+  description: Deals 5 damage, add 10 shield to self
   cardIcon: {fileID: 0}
   energyCost: 2
   cardType: 0

@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Deep Breath
   m_EditorClassIdentifier: 
   cardName: Deep Breath
-  description: Heals 3 HP
+  description: Heals 5 HP
   cardIcon: {fileID: 0}
   energyCost: 1
   cardType: 1
   targetType: 2
   effects:
   - effectType: 2
-    value: 3
+    value: 5
     secondaryValue: 0
   fatigueCost: 0

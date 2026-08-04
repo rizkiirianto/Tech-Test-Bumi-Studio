@@ -11,22 +11,24 @@ namespace TechTest.Core
 
         [Header("Run State")]
         public int currentRoomIndex = 0;
-        public int maxRooms = 7; 
+        public int maxRooms = 7;
 
         [Header("Persistent Resources")]
         public int currentRunHP;
         public int currentFatigue;
-        
+
         [Header("Data References")]
         public UnitData heroData;
+        private UnitData originalHeroData; // Untuk menyimpan referensi file aslinya
+
         public CardData fatigueDebuffCard; // The card added to deck when too fatigued
-        
+
         [Header("System References")]
         public DeckManager deckManager;
         public BattleManager battleManager;
-        
+
         [Header("Enemy Encounters")]
-        public List<UnitData> normalEnemies; 
+        public List<UnitData> normalEnemies;
         public UnitData bossEnemy;
         public UnitData tutorialEnemy; // Musuh khusus untuk Room 1
 
@@ -34,17 +36,26 @@ namespace TechTest.Core
         {
             if (Instance == null) Instance = this;
             else Destroy(gameObject);
+
+            // Simpan referensi file aslinya di memori saat game pertama kali nyala
+            if (heroData != null && originalHeroData == null)
+            {
+                originalHeroData = heroData;
+            }
         }
 
         public void StartNewRun()
         {
+            // Buat CLONE (salinan) dari data asli agar file .asset tidak kotor
+            if (originalHeroData != null)
+            {
+                heroData = Instantiate(originalHeroData);
+            }
+
             currentRoomIndex = 0;
             currentRunHP = heroData.maxHP;
             currentFatigue = 0;
-            
-            // Kita hapus baris `deckManager.currentRunDeck.Clear();` 
-            // agar deck awal yang diset di Inspector tidak hilang!
-            
+
             Debug.Log("New Run Started!");
             LoadMapNode();
         }
@@ -60,7 +71,7 @@ namespace TechTest.Core
 
             currentRoomIndex++;
             Debug.Log($"Entering Room {currentRoomIndex}");
-            
+
             // Room 3 and 6 are Campfire. Room 7 is Boss.
             if (currentRoomIndex == 3 || currentRoomIndex == 6)
             {
@@ -76,8 +87,8 @@ namespace TechTest.Core
         {
             Debug.Log("Combat Node Started.");
             TechTest.UI.RunUIManager.Instance.ShowBattle();
-            
-            AddFatigue(20);
+
+            AddFatigue(10);
 
             List<UnitData> enemiesToFight = new List<UnitData>();
 
@@ -93,6 +104,28 @@ namespace TechTest.Core
                 enemiesToFight.Add(firstEnemy);
                 Debug.Log("Tutorial Encounter! 1 enemy approaches.");
             }
+            else if (currentRoomIndex == 2)
+            {
+                // Spawn 1 to 3 regular enemies untuk Room lain
+                int enemyCount = Random.Range(1, 2);
+                for (int i = 0; i < enemyCount; i++)
+                {
+                    int randomIndex = Random.Range(0, normalEnemies.Count);
+                    enemiesToFight.Add(normalEnemies[randomIndex]);
+                }
+                Debug.Log($"Normal Encounter! {enemyCount} enemies approach.");
+            }
+            else if (currentRoomIndex == 3)
+            {
+                // Spawn 1 to 3 regular enemies untuk Room lain
+                int enemyCount = Random.Range(1, 3);
+                for (int i = 0; i < enemyCount; i++)
+                {
+                    int randomIndex = Random.Range(0, normalEnemies.Count);
+                    enemiesToFight.Add(normalEnemies[randomIndex]);
+                }
+                Debug.Log($"Normal Encounter! {enemyCount} enemies approach.");
+            }
             else
             {
                 // Spawn 1 to 3 regular enemies untuk Room lain
@@ -104,7 +137,7 @@ namespace TechTest.Core
                 }
                 Debug.Log($"Normal Encounter! {enemyCount} enemies approach.");
             }
-            
+
             battleManager.StartBattle(heroData, enemiesToFight);
             battleManager.playerUnit.SetHP(currentRunHP);
         }
@@ -119,13 +152,13 @@ namespace TechTest.Core
         {
             Debug.Log("You rested at the campfire.");
             currentFatigue = 0; // Reset fatigue
-            
+
             // Heal a bit
-            currentRunHP += (int)(heroData.maxHP * 0.3f); 
+            currentRunHP += (int)(heroData.maxHP * 0.3f);
             if (currentRunHP > heroData.maxHP) currentRunHP = heroData.maxHP;
-            
+
             Debug.Log($"Fatigue reset. HP is now {currentRunHP}");
-            
+
             CompleteNode();
         }
 
@@ -134,8 +167,8 @@ namespace TechTest.Core
             Debug.Log("You trained at the campfire. You feel stronger, but tired.");
             // Train increases max HP for this run, but doesn't heal or reset fatigue
             currentRunHP += 10;
-            heroData.maxHP += 10; 
-            
+            heroData.maxHP += 10;
+
             CompleteNode();
         }
 
@@ -166,7 +199,7 @@ namespace TechTest.Core
             }
         }
 
-        private void AddFatigue(int amount)
+        public void AddFatigue(int amount)
         {
             currentFatigue += amount;
             Debug.Log($"Fatigue increased by {amount}. Current: {currentFatigue}");
@@ -176,7 +209,7 @@ namespace TechTest.Core
                 Debug.Log("Fatigue limit reached! Adding an Exhaustion card to your deck.");
                 deckManager.currentRunDeck.Add(fatigueDebuffCard);
                 // Reduce fatigue so it can happen again, or cap it.
-                currentFatigue = 50; 
+                currentFatigue = 50;
             }
         }
     }

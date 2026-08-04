@@ -54,12 +54,8 @@ namespace TechTest.UI
                 if (playerBlockText != null) playerBlockText.text = $"Block: {battleManager.playerUnit.currentBlock}";
             }
 
-            if (battleManager.enemyUnit != null && battleManager.enemyUnit.unitData != null)
-            {
-                if (enemyHPText != null) enemyHPText.text = $"HP: {battleManager.enemyUnit.currentHP} / {battleManager.enemyUnit.unitData.maxHP}";
-                if (enemyBlockText != null) enemyBlockText.text = $"Block: {battleManager.enemyUnit.currentBlock}";
-                if (enemyIntentText != null) enemyIntentText.text = $"Intent: Attack {battleManager.upcomingEnemyDamage}";
-            }
+            // Note: Enemy UI is now handled individually by EnemyUI.cs prefabs spawned by BattleManager.
+            // The static enemyHPText, enemyBlockText, enemyIntentText in this script are no longer used.
         }
 
         private void UpdateDeckUI()
@@ -82,7 +78,7 @@ namespace TechTest.UI
                 {
                     GameObject cardGo = Instantiate(cardUIPrefab, handContainer);
                     cardGo.name = "Card_" + deckManager.hand[i].cardName;
-                    
+
                     CardUI cardUI = cardGo.GetComponent<CardUI>();
                     if (cardUI != null)
                     {

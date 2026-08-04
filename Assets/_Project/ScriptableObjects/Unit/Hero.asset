@@ -19,3 +19,5 @@ MonoBehaviour:
   maxEnergy: 3
   maxFatigue: 100
   drawPerTurn: 5
+  unitColor: {r: 0, g: 0.009414196, b: 1, a: 1}
+  unitScale: {x: 2.8, y: 2.8, z: 2.8}

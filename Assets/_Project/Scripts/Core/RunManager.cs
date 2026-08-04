@@ -11,7 +11,7 @@ namespace TechTest.Core
 
         [Header("Run State")]
         public int currentRoomIndex = 0;
-        public int maxRooms = 4; // Requirement: at least 4 stages
+        public int maxRooms = 7; 
 
         [Header("Persistent Resources")]
         public int currentRunHP;
@@ -41,6 +41,9 @@ namespace TechTest.Core
             currentRunHP = heroData.maxHP;
             currentFatigue = 0;
             
+            // Kita hapus baris `deckManager.currentRunDeck.Clear();` 
+            // agar deck awal yang diset di Inspector tidak hilang!
+            
             Debug.Log("New Run Started!");
             LoadMapNode();
         }
@@ -57,8 +60,8 @@ namespace TechTest.Core
             currentRoomIndex++;
             Debug.Log($"Entering Room {currentRoomIndex}");
             
-            // For prototype: Room 1, 2 are normal combat. Room 3 is Campfire. Room 4 is Boss.
-            if (currentRoomIndex == 3)
+            // Room 3 and 6 are Campfire. Room 7 is Boss.
+            if (currentRoomIndex == 3 || currentRoomIndex == 6)
             {
                 EnterCampfireNode();
             }
@@ -73,23 +76,28 @@ namespace TechTest.Core
             Debug.Log("Combat Node Started.");
             TechTest.UI.RunUIManager.Instance.ShowBattle();
             
-            // Add fatigue for traveling/fighting
             AddFatigue(20);
 
-            // Determine which enemy to fight
-            UnitData enemyToFight;
+            List<UnitData> enemiesToFight = new List<UnitData>();
+
             if (currentRoomIndex == maxRooms)
             {
-                enemyToFight = bossEnemy;
+                enemiesToFight.Add(bossEnemy);
                 Debug.Log("BOSS ENCOUNTER!");
             }
             else
             {
-                int randomIndex = Random.Range(0, normalEnemies.Count);
-                enemyToFight = normalEnemies[randomIndex];
+                // Spawn 1 to 3 regular enemies
+                int enemyCount = Random.Range(1, 4);
+                for (int i = 0; i < enemyCount; i++)
+                {
+                    int randomIndex = Random.Range(0, normalEnemies.Count);
+                    enemiesToFight.Add(normalEnemies[randomIndex]);
+                }
+                Debug.Log($"Normal Encounter! {enemyCount} enemies approach.");
             }
             
-            battleManager.StartBattle(heroData, enemyToFight);
+            battleManager.StartBattle(heroData, enemiesToFight);
             battleManager.playerUnit.SetHP(currentRunHP);
         }
 

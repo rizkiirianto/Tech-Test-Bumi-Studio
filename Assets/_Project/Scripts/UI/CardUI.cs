@@ -32,9 +32,8 @@ namespace TechTest.UI
         {
             if (battleManager == null || currentCardData == null) return;
 
-            // For now, always target the enemy.
-            // If you add targeting later, you'd change this logic.
-            battleManager.PlayCard(currentCardData, battleManager.enemyUnit);
+            // Trigger targeting state instead of playing instantly
+            battleManager.BeginTargeting(currentCardData);
         }
     }
 }

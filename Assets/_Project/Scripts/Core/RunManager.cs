@@ -28,6 +28,7 @@ namespace TechTest.Core
         [Header("Enemy Encounters")]
         public List<UnitData> normalEnemies; 
         public UnitData bossEnemy;
+        public UnitData tutorialEnemy; // Musuh khusus untuk Room 1
 
         private void Awake()
         {
@@ -85,9 +86,16 @@ namespace TechTest.Core
                 enemiesToFight.Add(bossEnemy);
                 Debug.Log("BOSS ENCOUNTER!");
             }
+            else if (currentRoomIndex == 1)
+            {
+                // Room 1 selalu 1 musuh tutorial (atau musuh pertama di list normal jika kosong)
+                UnitData firstEnemy = tutorialEnemy != null ? tutorialEnemy : normalEnemies[0];
+                enemiesToFight.Add(firstEnemy);
+                Debug.Log("Tutorial Encounter! 1 enemy approaches.");
+            }
             else
             {
-                // Spawn 1 to 3 regular enemies
+                // Spawn 1 to 3 regular enemies untuk Room lain
                 int enemyCount = Random.Range(1, 4);
                 for (int i = 0; i < enemyCount; i++)
                 {

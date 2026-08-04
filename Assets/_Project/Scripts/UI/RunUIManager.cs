@@ -133,5 +133,10 @@ namespace TechTest.UI
         {
             RunManager.Instance.StartNewRun();
         }
+
+        public void OnClickExitToMenu()
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+        }
     }
 }

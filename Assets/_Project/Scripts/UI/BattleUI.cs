@@ -36,13 +36,25 @@ namespace TechTest.UI
             deckManager.onHandChanged -= UpdateDeckUI;
         }
 
+        [Header("Targeting UI")]
+        public GameObject targetingText;
+
         private void Update()
         {
-            // Simple polling for UI updates (In a real game, use events for better performance)
+            // Simple polling for UI updates
             if (battleManager.state == BattleState.PlayerTurn || battleManager.state == BattleState.EnemyTurn)
             {
                 UpdateUnitUI();
                 if (energyText != null) energyText.text = $"Energy: {battleManager.currentEnergy} / {battleManager.maxEnergy}";
+            }
+
+            if (targetingText != null)
+            {
+                bool isTargeting = (battleManager.state == BattleState.ChoosingTarget);
+                if (targetingText.activeSelf != isTargeting)
+                {
+                    targetingText.SetActive(isTargeting);
+                }
             }
         }
 

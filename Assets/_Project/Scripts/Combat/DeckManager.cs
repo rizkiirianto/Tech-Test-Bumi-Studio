@@ -9,7 +9,20 @@ namespace TechTest.Combat
     {
         [Header("Deck States")]
         public List<CardData> currentRunDeck = new List<CardData>();
-        
+        private List<CardData> startingDeck = new List<CardData>(); // Store original cards
+
+        private void Awake()
+        {
+            // Save initial deck from inspector
+            startingDeck.AddRange(currentRunDeck);
+        }
+
+        public void ResetDeck()
+        {
+            currentRunDeck.Clear();
+            currentRunDeck.AddRange(startingDeck);
+        }
+
         [Header("Battle States")]
         public List<CardData> drawPile = new List<CardData>();
         public List<CardData> hand = new List<CardData>();

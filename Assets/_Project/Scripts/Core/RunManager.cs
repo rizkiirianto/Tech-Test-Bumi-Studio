@@ -56,6 +56,11 @@ namespace TechTest.Core
             currentRunHP = heroData.maxHP;
             currentFatigue = 0;
 
+            if (deckManager != null)
+            {
+                deckManager.ResetDeck();
+            }
+
             Debug.Log("New Run Started!");
             LoadMapNode();
         }
